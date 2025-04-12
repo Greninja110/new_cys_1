@@ -200,7 +200,7 @@ class NetworkTrafficClassifier:
         eval_preds = self.model.predict(X_eval_scaled)
         
         # Calculate evaluation metrics
-        metrics = self._calculate_metrics(y_train, train_preds, y_eval, eval_preds)
+        metrics = self._calculate_metrics(y_train, train_preds, y_eval, eval_preds, X_train_scaled, X_eval_scaled)
         
         # Log metrics
         logger.info(f"Training metrics:")
@@ -213,8 +213,7 @@ class NetworkTrafficClassifier:
         
         return metrics
     
-    def _calculate_metrics(self, y_train: np.ndarray, train_preds: np.ndarray,
-                          y_eval: np.ndarray, eval_preds: np.ndarray) -> Dict[str, Dict[str, float]]:
+    def _calculate_metrics(self, y_train: np.ndarray, train_preds: np.ndarray,y_eval: np.ndarray, eval_preds: np.ndarray, X_train_scaled=None, X_eval_scaled=None) -> Dict[str, Dict[str, float]]:
         """
         Calculate evaluation metrics.
         
@@ -223,6 +222,8 @@ class NetworkTrafficClassifier:
             train_preds (np.ndarray): Training set predictions.
             y_eval (np.ndarray): Evaluation set ground truth.
             eval_preds (np.ndarray): Evaluation set predictions.
+            X_train_scaled: Scaled training features (for ROC AUC)
+            X_eval_scaled: Scaled evaluation features (for ROC AUC)
             
         Returns:
             Dict[str, Dict[str, float]]: Dictionary of metrics.
@@ -239,8 +240,8 @@ class NetworkTrafficClassifier:
         metrics['train']['f1'] = f1_score(y_train, train_preds, average='weighted')
         
         # Check if binary classification for ROC AUC
-        if len(np.unique(y_train)) == 2 and hasattr(self.model, 'predict_proba'):
-            train_probs = self.model.predict_proba(self.scaler.transform(y_train.reshape(-1, 1)))[:, 1]
+        if len(np.unique(y_train)) == 2 and hasattr(self.model, 'predict_proba') and X_train_scaled is not None:
+            train_probs = self.model.predict_proba(X_train_scaled)[:, 1]
             metrics['train']['roc_auc'] = roc_auc_score(y_train, train_probs)
         
         # Evaluation metrics
@@ -250,8 +251,8 @@ class NetworkTrafficClassifier:
         metrics['eval']['f1'] = f1_score(y_eval, eval_preds, average='weighted')
         
         # Check if binary classification for ROC AUC
-        if len(np.unique(y_eval)) == 2 and hasattr(self.model, 'predict_proba'):
-            eval_probs = self.model.predict_proba(self.scaler.transform(y_eval.reshape(-1, 1)))[:, 1]
+        if len(np.unique(y_eval)) == 2 and hasattr(self.model, 'predict_proba') and X_eval_scaled is not None:
+            eval_probs = self.model.predict_proba(X_eval_scaled)[:, 1]
             metrics['eval']['roc_auc'] = roc_auc_score(y_eval, eval_probs)
         
         return metrics
