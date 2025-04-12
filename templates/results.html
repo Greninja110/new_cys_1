@@ -1,0 +1,89 @@
+<!-- templates/results.html -->
+{% extends "base.html" %}
+
+{% block title %}Analysis Results{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header {% if result.prediction == 'ddos' %}bg-danger{% else %}bg-success{% endif %} text-white">
+        <h2 class="card-title">Analysis Results</h2>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Summary</h3>
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <th>File Name</th>
+                            <td>{{ result.file_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Analysis Time</th>
+                            <td>{{ result.timestamp }}</td>
+                        </tr>
+                        <tr>
+                            <th>Classification</th>
+                            <td>
+                                {% if result.prediction == 'ddos' %}
+                                    <span class="badge badge-danger">DDoS Attack</span>
+                                {% else %}
+                                    <span class="badge badge-success">Normal Traffic</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% if result.probability is not none %}
+                        <tr>
+                            <th>Confidence</th>
+                            <td>{{ "%.2f"|format(result.probability * 100) }}%</td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <th>Processing Time</th>
+                            <td>{{ "%.2f"|format(result.processing_time) }} seconds</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="col-md-6">
+                <h3>Visualization</h3>
+                {% if result.visualizations %}
+                    {% for vis in result.visualizations %}
+                        <img src="{{ url_for('main.uploaded_file', filename=result.vis_dir + '/' + vis) }}" class="img-fluid mb-3" alt="Visualization">
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-info">No visualizations available</div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <h3>Key Features</h3>
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for key, value in result.features.items() %}
+                            <tr>
+                                <td>{{ key }}</td>
+                                <td>{{ value }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <a href="{{ url_for('main.index') }}" class="btn btn-primary">Analyze Another File</a>
+    </div>
+</div>
+{% endblock %}

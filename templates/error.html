@@ -1,0 +1,23 @@
+<!-- templates/error.html -->
+{% extends "base.html" %}
+
+{% block title %}Error{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-danger text-white">
+        <h2 class="card-title">Error</h2>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-danger">
+            <h4 class="alert-heading">An error occurred!</h4>
+            <p>{{ message }}</p>
+            {% if error %}
+                <hr>
+                <p class="mb-0">Error code: {{ error }}</p>
+            {% endif %}
+        </div>
+        <a href="{{ url_for('main.index') }}" class="btn btn-primary">Return to Home Page</a>
+    </div>
+</div>
+{% endblock %}

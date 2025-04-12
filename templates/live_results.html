@@ -1,0 +1,95 @@
+<!-- templates/live_results.html -->
+{% extends "base.html" %}
+
+{% block title %}Live Analysis Results{% endblock %}
+
+{% block extra_css %}
+<style>
+    .window-normal {
+        background-color: rgba(40, 167, 69, 0.2);
+    }
+    .window-ddos {
+        background-color: rgba(220, 53, 69, 0.2);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <h2 class="card-title">Live Traffic Analysis Results</h2>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Summary</h3>
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <th>File Name</th>
+                            <td>{{ result.file_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Total Packets</th>
+                            <td>{{ result.total_packets }}</td>
+                        </tr>
+                        <tr>
+                            <th>Window Size</th>
+                            <td>{{ result.window_size }} packets</td>
+                        </tr>
+                        <tr>
+                            <th>Window Count</th>
+                            <td>{{ result.window_count }}</td>
+                        </tr>
+                        <tr>
+                            <th>Normal Windows</th>
+                            <td>{{ result.normal_windows }} ({{ "%.2f"|format(result.normal_percentage) }}%)</td>
+                        </tr>
+                        <tr>
+                            <th>DDoS Windows</th>
+                            <td>{{ result.ddos_windows }} ({{ "%.2f"|format(result.ddos_percentage) }}%)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="col-md-6">
+                <h3>Traffic Pattern</h3>
+                <div class="progress" style="height: 50px;">
+                    <div class="progress-bar bg-success" role="progressbar" 
+                         style="width: {{ result.normal_percentage }}%"
+                         aria-valuenow="{{ result.normal_percentage }}" 
+                         aria-valuemin="0" aria-valuemax="100">
+                         {{ "%.2f"|format(result.normal_percentage) }}% Normal
+                    </div>
+                    <div class="progress-bar bg-danger" role="progressbar" 
+                         style="width: {{ result.ddos_percentage }}%"
+                         aria-valuenow="{{ result.ddos_percentage }}" 
+                         aria-valuemin="0" aria-valuemax="100">
+                         {{ "%.2f"|format(result.ddos_percentage) }}% DDoS
+                    </div>
+                </div>
+                
+                <h3 class="mt-4">Timeline</h3>
+                <div class="timeline-container border p-2 mt-2" style="height: 300px; overflow-y: auto;">
+                    {% for window in result.windows %}
+                    <div class="window-item p-2 mb-1 rounded {{ 'window-ddos' if window.prediction == 'ddos' else 'window-normal' }}">
+                        <strong>Window {{ loop.index }}:</strong> 
+                        Packets {{ window.window_start }}-{{ window.window_end }} | 
+                        <span class="badge {{ 'badge-danger' if window.prediction == 'ddos' else 'badge-success' }}">
+                            {{ window.prediction }}
+                        </span>
+                        {% if window.probability is not none %}
+                        | Confidence: {{ "%.2f"|format(window.probability * 100) }}%
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <a href="{{ url_for('main.live_analysis') }}" class="btn btn-primary">Analyze Another File</a>
+    </div>
+</div>
+{% endblock %}

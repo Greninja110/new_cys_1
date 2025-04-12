@@ -1,0 +1,60 @@
+<!-- templates/index.html -->
+{% extends "base.html" %}
+
+{% block title %}Network Traffic Analyzer - Home{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h2 class="card-title">Analyze Network Traffic</h2>
+            </div>
+            <div class="card-body">
+                {% if not model_status %}
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Warning:</strong> Model is not loaded. Some features may not work properly.
+                    </div>
+                {% endif %}
+                
+                <p class="lead">Upload a PCAP file to analyze for DDoS attacks.</p>
+                
+                <form method="POST" action="{{ url_for('main.upload_file') }}" enctype="multipart/form-data" class="mb-4">
+                    {{ form.csrf_token }}
+                    <div class="form-group">
+                        {{ form.file.label(class="form-control-label") }}
+                        {{ form.file(class="form-control-file", id="file_upload") }}
+                        {% if form.file.errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.file.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="progress mb-3 d-none" id="upload-progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+                    </div>
+                    {{ form.submit(class="btn btn-primary") }}
+                </form>
+                
+                <div class="card mt-4">
+                    <div class="card-header bg-info text-white">
+                        <h4>About Network Traffic Analyzer</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>This tool analyzes network traffic to detect DDoS attacks. Simply upload a PCAP file, and our machine learning model will analyze it for patterns of DDoS activity.</p>
+                        <p>Features:</p>
+                        <ul>
+                            <li>Fast analysis of PCAP network capture files</li>
+                            <li>Machine learning-based detection of DDoS attacks</li>
+                            <li>Detailed analysis and visualizations</li>
+                            <li>Support for various DDoS attack patterns</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

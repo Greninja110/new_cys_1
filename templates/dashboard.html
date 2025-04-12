@@ -1,0 +1,41 @@
+<!-- templates/dashboard.html -->
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h2 class="card-title">Dashboard</h2>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-info">
+            <p>The dashboard feature is under development. In the future, it will display statistics and historical data from your analyses.</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Recent Analyses</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>No recent analyses to display.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Statistics</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>No statistics available yet.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

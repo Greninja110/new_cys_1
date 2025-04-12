@@ -1,0 +1,124 @@
+# configs/data_config.yaml
+data:
+  raw_path:
+    cic_ids2017: data/raw/CIC-IDS2017
+    cic_ddos2019: data/raw/CIC-DDoS2019
+  processed_path:
+    training: data/processed/training
+    testing: data/processed/testing
+  upload_path: data/uploads
+  models_path: data/models
+  
+  # PCAP processing settings
+  pcap:
+    batch_size: 1000
+    timeout: 120
+    
+  # Parquet processing settings
+  parquet:
+    chunk_size: 100000
+    
+  # CSV settings
+  csv:
+    separator: ","
+    header: true
+    index: false
+    
+  # Dataset splitting
+  split:
+    test_size: 0.2
+    random_state: 42
+
+# configs/feature_config.yaml
+features:
+  # Feature selection
+  selection:
+    method: "variance_threshold"
+    threshold: 0.01
+    
+  # Feature scaling
+  scaling:
+    method: "standard_scaler"
+    
+  # Feature engineering
+  flow_features:
+    window_size: 100
+    use_statistics: true
+    use_entropy: true
+    
+  # Feature groups to extract
+  groups:
+    - "basic"      # Packet length, count, etc.
+    - "time"       # Time-based features
+    - "flow"       # Flow-based features
+    - "statistical" # Statistical features
+    - "payload"    # Payload-based features
+    
+  # Specific features to extract
+  extract:
+    - "packet_length_mean"
+    - "packet_length_std"
+    - "packet_length_min"
+    - "packet_length_max"
+    - "flow_duration"
+    - "flow_packets_per_second"
+    - "flow_bytes_per_second"
+    - "tcp_flags"
+    - "protocol"
+    - "source_port"
+    - "destination_port"
+    - "packet_count"
+    - "byte_count"
+    - "unique_src_ips"
+    - "unique_dst_ips"
+    - "ratio_syn_packets"
+    - "ratio_fin_packets"
+    - "ratio_rst_packets"
+    - "entropy_src_ip"
+    - "entropy_dst_ip"
+    - "entropy_src_port"
+    - "entropy_dst_port"
+
+# configs/model_config.yaml
+model:
+  type: "random_forest"
+  save_path: "data/models/model.pkl"
+  scaler_path: "data/models/feature_scaler.pkl"
+  
+  # Random Forest parameters
+  random_forest:
+    n_estimators: 100
+    max_depth: 20
+    min_samples_split: 2
+    min_samples_leaf: 1
+    bootstrap: true
+    class_weight: "balanced"
+    random_state: 42
+    
+  # XGBoost parameters
+  xgboost:
+    n_estimators: 100
+    max_depth: 10
+    learning_rate: 0.1
+    subsample: 0.8
+    colsample_bytree: 0.8
+    objective: "binary:logistic"
+    random_state: 42
+    
+  # Neural Network parameters
+  neural_network:
+    hidden_layers: [128, 64]
+    activation: "relu"
+    optimizer: "adam"
+    loss: "binary_crossentropy"
+    metrics: ["accuracy"]
+    batch_size: 32
+    epochs: 10
+    validation_split: 0.2
+    verbose: 1
+    random_state: 42
+    
+  # Evaluation parameters
+  evaluation:
+    cv_folds: 5
+    scoring: ["accuracy", "precision", "recall", "f1", "roc_auc"]

@@ -1,0 +1,43 @@
+<!-- templates/live_analysis.html -->
+{% extends "base.html" %}
+
+{% block title %}Live Traffic Analysis{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h2 class="card-title">Live Traffic Analysis</h2>
+    </div>
+    <div class="card-body">
+        <p class="lead">Upload a PCAP file for live traffic analysis with sliding window.</p>
+        
+        <form method="POST" action="{{ url_for('main.live_analysis') }}" enctype="multipart/form-data" class="mb-4">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="form-group">
+                <label for="file">Upload PCAP File</label>
+                <input type="file" class="form-control-file" id="file" name="file" required>
+            </div>
+            <div class="form-group">
+                <label for="window_size">Window Size (packets)</label>
+                <input type="number" class="form-control" id="window_size" name="window_size" value="1000" min="100" max="10000" required>
+                <small class="form-text text-muted">Number of packets to analyze in each window.</small>
+            </div>
+            <button type="submit" class="btn btn-primary">Start Analysis</button>
+        </form>
+        
+        <div class="card mt-4">
+            <div class="card-header bg-info text-white">
+                <h4>About Live Analysis</h4>
+            </div>
+            <div class="card-body">
+                <p>This feature analyzes network traffic in time windows to detect changes in traffic patterns. It's useful for:</p>
+                <ul>
+                    <li>Identifying when a DDoS attack begins within a capture</li>
+                    <li>Analyzing how traffic patterns evolve over time</li>
+                    <li>Detecting periodic or intermittent attacks</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

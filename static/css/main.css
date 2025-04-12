@@ -1,0 +1,64 @@
+/* static/css/main.css */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container {
+    flex: 1;
+}
+
+.footer {
+    margin-top: 2rem;
+}
+
+.card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    font-weight: bold;
+}
+
+/* Upload form styling */
+.custom-file-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Results page styling */
+.badge {
+    font-size: 100%;
+    padding: 0.5rem;
+}
+
+/* Timeline styling for live analysis */
+.timeline-container {
+    background-color: #f8f9fa;
+}
+
+.window-item {
+    transition: all 0.3s ease;
+}
+
+.window-item:hover {
+    transform: translateX(5px);
+}
+
+/* Responsive tables */
+.table-responsive {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+    .card-title {
+        font-size: 1.5rem;
+    }
+}
+
+
+
